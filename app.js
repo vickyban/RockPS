@@ -1,69 +1,47 @@
-document.addEventListener("DOMContentLoaded", function(){
-    const picks_value = { rock: 1, paper:2, scissors:3};
-    const picks = ["rock", "paper", "scissors"]; 
 
-    let player = { score: 0 };
-    let pc = { score: 0};
-    // new comment
+    const outcome = {
+        rock:     {rock: "draw", paper: "lose", scissors: "win"},
+        paper:    {rock: "win",  paper: "draw", scissors: "lose"},
+        scissors: {rock: "lose", paper: "win",  scissors: "draw"},
+    };
+
+    let gamers = {player: 0,pc: 0};
+
     // when Submit 
-    let form = document.forms['interface'];
-    form.addEventListener("submit", function(event){
+    document.forms['interface'].addEventListener("submit", function(event){
         event.preventDefault();
         let user = getInput();
-        let cmp = pcPick();
-        let res = result(user, cmp);
-        let text = resultText(res);
+        let pc = pcPick();
+        let text = result(user, pc, gamers);
 
-        document.getElementById("text").innerText = `User picked ${picks[user - 1]}. Pc picked ${picks[cmp - 1]}. ${text}`;
-        document.getElementById("user_score").innerText = player.score;
-        document.getElementById("pc_score").innerText = pc.score;
+        document.getElementById("text").innerText = `You picked ${user}. Pc picked ${pc}. ${text}`;
+        document.getElementById("user_score").innerText = gamers["player"];
+        document.getElementById("pc_score").innerText = gamers["pc"];
     })
-
 
     // helpers
     function getInput() {
-        let input = form.querySelector("input[type='text']").value.toLowerCase();
-        return picks_value[input];
+        return document.forms['interface'].querySelector("input[type='text']").value.toLowerCase();
     }
-
 
     function pcPick(){
-        return Math.floor(Math.random() * 3) + 1;
+        const choices = {0: "rock", 1: "paper", 2: "scissors"};
+        return choices[Math.floor(Math.random() * 3)];
     }
 
-    function result(user, cmp){
-        if(user === cmp){
-            return null;
-        }else if (user === 1 && cmp === 3 ){
-            return true;
-        }else if (user === 2 && cmp === 1){
-            return true;
-        }else if (user === 3 && cmp === 2){
-            return true;
-        }else if (user === 1 && cmp === 2){
-            return false;
-        }else if (user === 2 && cmp === 3){
-            return false;
-        }else if (user === 3 && cmp === 1){
-            return false;
+    function result(user, pc, gamers){
+        let res = outcome[user][pc];
+        if(res === "draw"){
+            gamers["player"]++;
+            gamers["pc"]++;
+            return "It's a draw!"
         }
-    }
-
-    function resultText(res){
-        if(res === null){
-            player.score++;
-            pc.score++;
-            return "A Draw";
-        }
-        if(res){
-            player.score++;
-            return "Player Win";
+        if(res === "win"){
+            gamers["player"]++;
+            return "You win!"
         }else{
-            pc.score++;
-            return "Pc Win";
+            gamers["pc"]++;
+            return "You lose!"
         }
     }
-
-
-});
 
