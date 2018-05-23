@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let player = { score: 0 };
     let pc = { score: 0};
-
+    // new comment
     // when Submit 
     let form = document.forms['interface'];
     form.addEventListener("submit", function(event){
